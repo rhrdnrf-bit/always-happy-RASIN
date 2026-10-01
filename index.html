@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Pokémon Birthday - Muhammad Rasya</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+        overflow: hidden;
+      }
+
+      body {
+        background: linear-gradient(
+          180deg,
+          #55cfff 0%,
+          #b8edff 55%,
+          #ffffff 100%
+        );
+
+        color: #17324d;
+      }
+
+      #app {
+        min-height: 100vh;
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* =========================
+   BACKGROUND
+========================= */
+
+      .cloud {
+        position: absolute;
+        background: white;
+        border-radius: 50px;
+        opacity: 0.8;
+      }
+
+      .cloud:before,
+      .cloud:after {
+        content: "";
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+      }
+
+      .cloud:before {
+        width: 65px;
+        height: 65px;
+        left: 22px;
+        bottom: 0;
+      }
+
+      .cloud:after {
+        width: 90px;
+        height: 90px;
+        right: 25px;
+        bottom: 0;
+      }
+
+      .cloud.one {
+        width: 190px;
+        height: 45px;
+        top: 12%;
+        left: -40px;
+      }
+
+      .cloud.two {
+        width: 230px;
+        height: 55px;
+        top: 25%;
+        right: -50px;
+        transform: scale(0.8);
+      }
+
+      .cloud.three {
+        width: 150px;
+        height: 38px;
+        bottom: 17%;
+        left: 8%;
+        transform: scale(0.7);
+      }
+
+      .stars {
+        position: absolute;
+        inset: 0;
+
+        background-image: radial-gradient(#ffffff 1.5px, transparent 1.5px);
+
+        background-size: 42px 42px;
+
+        opacity: 0.35;
+      }
+
+      /* =========================
+   SCENE
+========================= */
+
+      .scene {
+        position: absolute;
+        inset: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        opacity: 0;
+        pointer-events: none;
+
+        transform: scale(0.94);
+
+        transition:
+          opacity 0.7s,
+          transform 0.7s;
+      }
+
+      .scene.active {
+        opacity: 1;
+        pointer-events: auto;
+
+        transform: scale(1);
+      }
+
+      /* =========================
+   PANEL
+========================= */
+
+      .panel {
+        width: min(90vw, 720px);
+
+        padding: 34px 28px;
+
+        border: 5px solid #1c3555;
+
+        border-radius: 30px;
+
+        background: rgba(255, 255, 255, 0.94);
+
+        box-shadow: 0 18px 50px rgba(0, 55, 100, 0.25);
+
+        text-align: center;
+
+        position: relative;
+
+        z-index: 2;
+      }
+
+      h1 {
+        font-size: clamp(34px, 8vw, 68px);
+
+        margin: 8px 0;
+
+        color: #ef3340;
+
+        text-shadow:
+          3px 3px #ffd83d,
+          -2px -2px #1c3555;
+      }
+
+      h2 {
+        font-size: clamp(25px, 5vw, 42px);
+
+        margin: 10px 0;
+
+        color: #1c3555;
+      }
+
+      p {
+        font-size: clamp(16px, 3vw, 21px);
+
+        line-height: 1.6;
+      }
+
+      /* =========================
+   BUTTON
+========================= */
+
+      button {
+        border: 4px solid #1c3555;
+
+        border-radius: 18px;
+
+        padding: 14px 25px;
+
+        background: #ffcb05;
+
+        color: #1c3555;
+
+        font-weight: 900;
+
+        font-size: 18px;
+
+        cursor: pointer;
+
+        box-shadow: 0 6px 0 #1c3555;
+
+        transition: 0.15s;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+
+        box-shadow: 0 8px 0 #1c3555;
+      }
+
+      button:active {
+        transform: translateY(4px);
+
+        box-shadow: 0 2px 0 #1c3555;
+      }
+
+      /* =========================
+   POKEBALL
+========================= */
+
+      .pokeball {
+        width: 150px;
+        height: 150px;
+
+        border: 8px solid #1c3555;
+
+        border-radius: 50%;
+
+        background: linear-gradient(
+          #ef3340 0 46%,
+          #1c3555 46% 54%,
+          #ffffff 54%
+        );
+
+        margin: 0 auto 22px;
+
+        position: relative;
+
+        box-shadow: 0 12px 25px #234c6640;
+
+        animation: float 2s ease-in-out infinite;
+      }
+
+      .pokeball:after {
+        content: "";
+
+        position: absolute;
+
+        width: 42px;
+        height: 42px;
+
+        background: white;
+
+        border: 7px solid #1c3555;
+
+        border-radius: 50%;
+
+        left: 50%;
+        top: 50%;
+
+        transform: translate(-50%, -50%);
+      }
+
+      .pokeball:before {
+        content: "";
+
+        position: absolute;
+
+        width: 17px;
+        height: 17px;
+
+        background: #dff8ff;
+
+        border-radius: 50%;
+
+        left: 50%;
+        top: 50%;
+
+        transform: translate(-50%, -50%);
+
+        z-index: 2;
+      }
+
+      /* =========================
+   PIKACHU
+========================= */
+
+      .pikachu {
+        width: 125px;
+        height: 110px;
+
+        background: #ffd92f;
+
+        border: 5px solid #1c3555;
+
+        border-radius: 50% 50% 45% 45%;
+
+        margin: 8px auto 22px;
+
+        position: relative;
+
+        animation: bounce 1.6s infinite;
+      }
+
+      .pikachu:before,
+      .pikachu:after {
+        content: "";
+
+        position: absolute;
+
+        width: 30px;
+        height: 58px;
+
+        background: #ffd92f;
+
+        border: 5px solid #1c3555;
+
+        top: -45px;
+
+        z-index: -1;
+      }
+
+      .pikachu:before {
+        left: 4px;
+
+        transform: rotate(-20deg);
+
+        border-radius: 70% 20% 50% 50%;
+      }
+
+      .pikachu:after {
+        right: 4px;
+
+        transform: rotate(20deg);
+
+        border-radius: 20% 70% 50% 50%;
+      }
+
+      .eye {
+        position: absolute;
+
+        width: 13px;
+        height: 17px;
+
+        background: #17212b;
+
+        border-radius: 50%;
+
+        top: 38px;
+      }
+
+      .eye.l {
+        left: 32px;
+      }
+
+      .eye.r {
+        right: 32px;
+      }
+
+      .cheek {
+        position: absolute;
+
+        width: 24px;
+        height: 17px;
+
+        background: #ef3340;
+
+        border-radius: 50%;
+
+        top: 62px;
+      }
+
+      .cheek.l {
+        left: 12px;
+      }
+
+      .cheek.r {
+        right: 12px;
+      }
+
+      .mouth {
+        position: absolute;
+
+        left: 50%;
+        top: 57px;
+
+        width: 25px;
+        height: 16px;
+
+        border-bottom: 4px solid #1c3555;
+
+        border-radius: 0 0 50% 50%;
+
+        transform: translateX(-50%);
+      }
+
+      /* =========================
+   CARDS
+========================= */
+
+      .card {
+        display: inline-block;
+
+        background: white;
+
+        border: 5px solid #ffd23f;
+
+        border-radius: 20px;
+
+        padding: 15px;
+
+        margin: 8px;
+
+        box-shadow: 0 8px 0 #1c3555;
+
+        transform: rotate(-2deg);
+      }
+
+      .card:nth-child(2) {
+        transform: rotate(3deg);
+      }
+
+      .card .emoji {
+        font-size: 55px;
+      }
+
+      .card b {
+        display: block;
+        margin-top: 5px;
+      }
+
+      /* =========================
+   CONFETTI
+========================= */
+
+      .confetti {
+        position: absolute;
+
+        inset: 0;
+
+        overflow: hidden;
+
+        pointer-events: none;
+      }
+
+      .confetti i {
+        position: absolute;
+
+        width: 10px;
+        height: 20px;
+
+        background: #ef3340;
+
+        animation: fall 4s linear infinite;
+
+        top: -30px;
+      }
+
+      .confetti i:nth-child(2n) {
+        background: #ffcb05;
+      }
+
+      .confetti i:nth-child(3n) {
+        background: #2a9df4;
+      }
+
+      .confetti i:nth-child(4n) {
+        background: #62c370;
+      }
+
+      /* =========================
+   ANIMATION
+========================= */
+
+      @keyframes float {
+        50% {
+          transform: translateY(-12px) rotate(3deg);
+        }
+      }
+
+      @keyframes bounce {
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(110vh) rotate(720deg);
+        }
+      }
+
+      /* =========================
+   MUSIC BUTTON
+========================= */
+
+      #music {
+        position: fixed;
+
+        right: 15px;
+        top: 15px;
+
+        z-index: 20;
+
+        border-radius: 50%;
+
+        width: 52px;
+        height: 52px;
+
+        padding: 0;
+
+        font-size: 21px;
+      }
+
+      .small {
+        font-size: 14px;
+
+        opacity: 0.7;
+
+        margin-top: 20px;
+      }
+
+      .wedding {
+        color: #ef3340;
+
+        font-size: clamp(18px, 4vw, 30px);
+
+        font-weight: 900;
+
+        margin-top: 20px;
+
+        text-shadow: 2px 2px #ffd23d;
+
+        animation: weddingPulse 1.2s infinite;
+      }
+
+      @keyframes weddingPulse {
+        50% {
+          transform: scale(1.05);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="cloud one"></div>
+      <div class="cloud two"></div>
+      <div class="cloud three"></div>
+
+      <div class="stars"></div>
+
+      <div class="confetti" id="confetti"></div>
+
+      <!-- AUDIO -->
+      <audio id="pokemonMusic" loop preload="auto">
+        <source src="ssstik.io_1790843182413.mp3" type="audio/mpeg" />
+      </audio>
+
+      <!-- MUSIC BUTTON -->
+
+      <button id="music" onclick="toggleMusic()">🔊</button>
+
+      <!-- =========================
+         SCENE 1
+    ========================== -->
+
+      <section class="scene active" id="s1">
+        <div class="panel">
+          <div class="pokeball"></div>
+
+          <h2>A Wild Birthday Appeared!</h2>
+
+          <p>Seorang Trainer spesial sedang merayakan hari ulang tahunnya...</p>
+
+          <button onclick="startExperience()">BUKA POKÉ BALL ⚡</button>
+        </div>
+      </section>
+
+      <!-- =========================
+         SCENE 2
+    ========================== -->
+
+      <section class="scene" id="s2">
+        <div class="panel">
+          <div class="pikachu">
+            <span class="eye l"></span>
+            <span class="eye r"></span>
+
+            <span class="cheek l"></span>
+            <span class="cheek r"></span>
+
+            <span class="mouth"></span>
+          </div>
+
+          <h1>HAPPY BIRTHDAY!</h1>
+
+          <h2>MUHAMMAD RASYA 🎉</h2>
+
+          <p>
+            Hari ini bukan sekadar naik level.
+
+            <br />
+
+            Ini adalah awal dari petualangan Pokémon yang baru!
+          </p>
+
+          <button onclick="next(3)">LANJUTKAN PETUALANGAN →</button>
+        </div>
+      </section>
+
+      <!-- =========================
+         SCENE 3
+    ========================== -->
+
+      <section class="scene" id="s3">
+        <div class="panel">
+          <h2>🎒 TRAINER CARD 🎒</h2>
+
+          <div class="card">
+            <div class="emoji">⚡</div>
+
+            <b> Pikachu </b>
+
+            <span> Lv. 100 </span>
+          </div>
+
+          <div class="card">
+            <div class="emoji">🔥</div>
+
+            <b> Charizard </b>
+
+            <span> Lv. 100 </span>
+          </div>
+
+          <div class="card">
+            <div class="emoji">🌊</div>
+
+            <b> Blastoise </b>
+
+            <span> Lv. 100 </span>
+          </div>
+
+          <p>
+            Semoga Muhammad Rasya selalu mendapatkan Pokémon terbaik,
+            teman-teman terbaik, dan petualangan yang seru.
+          </p>
+
+          <button onclick="next(4)">AMBIL HADIAH 🎁</button>
+        </div>
+      </section>
+
+      <!-- =========================
+         SCENE 4
+    ========================== -->
+
+      <section class="scene" id="s4">
+        <div class="panel">
+          <div style="font-size: 75px; animation: float 1.5s infinite">🎁</div>
+
+          <h1>CONGRATULATIONS!</h1>
+
+          <h2>Muhammad Rasya</h2>
+
+          <p>
+            Semoga panjang umur, sehat selalu, semakin sukses, dan semua
+            cita-citamu bisa tercapai.
+
+            <br /><br />
+
+            Tetap semangat menjalani setiap level kehidupan!
+          </p>
+
+          <p>
+            <b> ✨ Your next adventure starts now! ✨ </b>
+          </p>
+
+          <!-- PESAN SINTA -->
+
+          <p class="wedding">💍 DITUNGGU PERNIKAHANNYA SAMA SINTA 💍</p>
+
+          <button onclick="next(1)">↻ ULANGI</button>
+
+          <div class="small">Made with Pokémon vibes • Muhammad Rasya</div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      /* =========================
+   AUDIO
+========================= */
+
+      const music = document.getElementById("pokemonMusic");
+
+      let musicPlaying = false;
+
+      /* =========================
+   START
+========================= */
+
+      function startExperience() {
+        music.volume = 0.55;
+
+        music
+          .play()
+          .then(() => {
+            musicPlaying = true;
+
+            document.getElementById("music").textContent = "🔇";
+          })
+          .catch(() => {
+            console.log(
+              "Browser membutuhkan interaksi pengguna untuk memutar audio.",
+            );
+          });
+
+        next(2);
+
+        burst();
+      }
+
+      /* =========================
+   MUSIC BUTTON
+========================= */
+
+      function toggleMusic() {
+        if (music.paused) {
+          music.volume = 0.55;
+
+          music.play();
+
+          musicPlaying = true;
+
+          document.getElementById("music").textContent = "🔇";
+        } else {
+          music.pause();
+
+          musicPlaying = false;
+
+          document.getElementById("music").textContent = "🔊";
+        }
+      }
+
+      /* =========================
+   SCENE
+========================= */
+
+      let current = 1;
+
+      function next(n) {
+        document.getElementById("s" + current).classList.remove("active");
+
+        current = n;
+
+        document.getElementById("s" + current).classList.add("active");
+
+        if (n === 2 || n === 4) {
+          burst();
+        }
+      }
+
+      /* =========================
+   CONFETTI
+========================= */
+
+      function burst() {
+        for (let i = 0; i < 30; i++) {
+          const e = document.createElement("i");
+
+          e.style.left = Math.random() * 100 + "%";
+
+          e.style.animationDelay = Math.random() * 1.5 + "s";
+
+          e.style.animationDuration = 2.5 + Math.random() * 2 + "s";
+
+          document.getElementById("confetti").appendChild(e);
+
+          setTimeout(() => e.remove(), 5000);
+        }
+      }
+
+      burst();
+    </script>
+  </body>
+</html>
